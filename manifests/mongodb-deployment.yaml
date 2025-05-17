@@ -2,28 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongodb
+  namespace: srinivas-gonepudi-dev
+  labels:
+    app: mongodb
+    project: roboshop
+    tier: db
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: mongodb
+      project: roboshop
+      tier: db
   template:
     metadata:
       labels:
         app: mongodb
+        project: roboshop
+        tier: db
     spec:
       containers:
         - name: mongodb
           image: 025066240744.dkr.ecr.us-east-1.amazonaws.com/openshift-images-repo:mongodb
+          imagePullPolicy: Always
           ports:
             - containerPort: 27017
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: admin
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: admin123
-            - name: MONGO_INITDB_DATABASE
-              value: catalogueDB
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db
@@ -32,3 +35,19 @@ spec:
           emptyDir: {}
       imagePullSecrets:
         - name: aws-ecr-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: srinivas-gonepudi-dev
+spec:
+  selector:
+    app: mongodb
+    project: roboshop
+    tier: db
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
