@@ -66,6 +66,8 @@ jobs:
       run: |
         oc apply -f manifests/catalogue-api-deployment.yaml
 
-    - name: 🚀 Deploy web to OpenShift
+    - name: 🚀 Deploy NGINX Web to OpenShift
       run: |
-        oc apply -f manifests/nginx-web-deployment.yaml        
+        oc apply -f manifests/nginx-web.yaml
+        oc rollout restart deployment/nginx-web -n srinivas-gonepudi-dev
+        oc rollout status deployment/nginx-web -n srinivas-gonepudi-dev        
