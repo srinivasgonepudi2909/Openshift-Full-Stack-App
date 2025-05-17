@@ -74,17 +74,21 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-        - name: nginx-conf
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
-          readOnly: true
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
       volumes:
-      - name: nginx-conf
-        configMap:
-          name: web
-          items:
-            - key: nginx.conf
-              path: nginx.conf
+        - name: nginx-conf
+          configMap:
+            name: nginx-web
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: nginx-cache
+          emptyDir: {}
       imagePullSecrets:
         - name: aws-ecr-secret
 
