@@ -53,3 +53,7 @@ jobs:
         oc login ${{ secrets.OCP_API_URL }} \
           --token=${{ secrets.OCP_TOKEN }} \
           --insecure-skip-tls-verify=true    
+    
+    - name: 🚀 Deploy MongoDB to OpenShift
+      run: |
+        oc apply -f manifests/mongodb-deployment.yaml
