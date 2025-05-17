@@ -21,8 +21,15 @@ spec:
         imagePullPolicy: Always
         ports:
           - containerPort: 80
+        volumeMounts:
+          - name: nginx-cache
+            mountPath: /var/cache/nginx
       imagePullSecrets:
         - name: aws-ecr-secret
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
+
 ---
 apiVersion: v1
 kind: Service
