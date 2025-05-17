@@ -1,14 +1,14 @@
-# ConfigMap
+# ConfigMap (roboshop.conf content)
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-web
+  name: nginx-web-conf
   namespace: srinivas-gonepudi-dev
 data:
-  nginx.conf: |
+  roboshop.conf: |
     user www-data;
     worker_processes 4;
-    pid /var/run/nginx.pid;
+    # pid /var/run/nginx.pid;
 
     events {
       worker_connections 768;
@@ -20,6 +20,7 @@ data:
       tcp_nodelay on;
       keepalive_timeout 65;
       types_hash_max_size 2048;
+      large_client_header_buffers 6 32k;
       client_max_body_size 100m;
 
       include /etc/nginx/mime.types;
@@ -28,22 +29,34 @@ data:
       access_log /var/log/nginx/access.log;
       error_log /var/log/nginx/error.log warn;
 
+      gzip on;
+      gzip_disable "msie6";
+
       server {
-        listen       8080;
-        server_name  localhost;
+        listen 8080;
+        server_name localhost;
+
+        proxy_http_version 1.1;
 
         location / {
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
+          root /usr/share/nginx/html;
+          index index.html index.htm;
+          ssi on;
+        }
+
+        location /images/ {
+          expires 5s;
+          root /usr/share/nginx/html;
+          try_files $uri /images/placeholder.png;
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+          root /usr/share/nginx/html;
         }
 
         location /api/catalogue/ {
           proxy_pass http://catalogue:8080/;
-        }
-
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
         }
       }
     }
@@ -75,18 +88,17 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: nginx-conf
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-              readOnly: true
+              mountPath: /etc/nginx/conf.d/roboshop.conf
+              subPath: roboshop.conf
             - name: nginx-cache
               mountPath: /var/cache/nginx
       volumes:
         - name: nginx-conf
           configMap:
-            name: nginx-web
+            name: nginx-web-conf
             items:
-              - key: nginx.conf
-                path: nginx.conf
+              - key: roboshop.conf
+                path: roboshop.conf
         - name: nginx-cache
           emptyDir: {}
       imagePullSecrets:
@@ -105,7 +117,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080  # maps external port 80 → container port 8080
+      targetPort: 8080
 
 ---
 # Route
