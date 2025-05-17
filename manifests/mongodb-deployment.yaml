@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongodb
-  labels:
-    app: mongodb
 spec:
   replicas: 1
   selector:
@@ -15,28 +13,22 @@ spec:
         app: mongodb
     spec:
       containers:
-      - name: mongodb
-        image: 025066240744.dkr.ecr.us-east-1.amazonaws.com/openshift-images-repo:mongodb
-        ports:
-        - containerPort: 27017
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          value: admin
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          value: admin123
-        - name: MONGO_INITDB_DATABASE
-          value: catalogueDB
+        - name: mongodb
+          image: 025066240744.dkr.ecr.us-east-1.amazonaws.com/openshift-images-repo:mongodb
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: admin
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: admin123
+            - name: MONGO_INITDB_DATABASE
+              value: catalogueDB
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+      volumes:
+        - name: mongodb-data
+          emptyDir: {}
       imagePullSecrets:
-      - name: aws-ecr-secret    
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb
-spec:
-  selector:
-    app: mongodb
-  ports:
-  - protocol: TCP
-    port: 27017
-    targetPort: 27017
+        - name: aws-ecr-secret
