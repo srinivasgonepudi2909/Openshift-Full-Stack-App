@@ -64,4 +64,8 @@ jobs:
 
     - name: 🚀 Deploy catalogue to OpenShift
       run: |
-        oc apply -f manifests/catalogue-api-deployment.yaml    
+        oc apply -f manifests/catalogue-api-deployment.yaml
+
+    - name: 🚀 Deploy web to OpenShift
+      run: |
+        oc apply -f manifests/nginx-deployment.yaml        

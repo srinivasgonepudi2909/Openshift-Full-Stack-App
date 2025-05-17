@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-web
+  namespace: srinivas-gonepudi-dev
+  labels:
+    app: nginx-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-web
+  template:
+    metadata:
+      labels:
+        app: nginx-web
+    spec:
+      containers:
+      - name: nginx-web
+        image: 025066240744.dkr.ecr.us-east-1.amazonaws.com/openshift-images-repo:nginx-web
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: aws-ecr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-web
+  namespace: srinivas-gonepudi-dev
+spec:
+  selector:
+    app: nginx-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: nginx-web
+  namespace: srinivas-gonepudi-dev
+spec:
+  to:
+    kind: Service
+    name: nginx-web
+  port:
+    targetPort: 80
