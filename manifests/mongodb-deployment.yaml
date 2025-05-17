@@ -26,6 +26,8 @@ spec:
           value: admin123
         - name: MONGO_INITDB_DATABASE
           value: catalogueDB
+      imagePullSecrets:
+      - name: aws-ecr-secret    
 ---
 apiVersion: v1
 kind: Service
