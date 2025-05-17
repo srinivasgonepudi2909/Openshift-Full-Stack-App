@@ -54,6 +54,10 @@ jobs:
           --token=${{ secrets.OCP_TOKEN }} \
           --insecure-skip-tls-verify=true    
     
+    - name: 📁 Set Project Namespace
+      run: |
+        oc project srinivas-gonepudi-dev
+
     - name: 🚀 Deploy MongoDB to OpenShift
       run: |
         oc apply -f manifests/mongodb-deployment.yaml
