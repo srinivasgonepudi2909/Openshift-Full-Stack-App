@@ -7,8 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REGISTRY: 025066240744.dkr.ecr.us-east-1.amazonaws.com
-  ECR_REPO: openshift-images-repo
+  ECR_URI: 025066240744.dkr.ecr.us-east-1.amazonaws.com/openshift-images-repo
 
 jobs:
   push-images:
@@ -18,7 +17,7 @@ jobs:
     - name:  Checkout Code
       uses: actions/checkout@v3
 
-    - name:  Configure AWS Credentials
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -26,20 +25,19 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Login to Amazon ECR
-      id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: 🛠 Build and Push NGINX Web Image
+    - name: Build and Push NGINX Web Image
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPO/nginx-web:latest ./nginx-web
-        docker push $ECR_REGISTRY/$ECR_REPO/nginx-web:latest
+        docker build -t $ECR_URI:nginx-web ./nginx-web
+        docker push $ECR_URI:nginx-web
 
     - name: Build and Push Catalogue API Image
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPO/catalogue:latest ./catalogue
-        docker push $ECR_REGISTRY/$ECR_REPO/catalogue-api:latest
+        docker build -t $ECR_URI:catalogue ./catalogue
+        docker push $ECR_URI:catalogue
 
     - name: 🛠 Build and Push MongoDB Custom Image
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPO/mongodb:latest ./mongodb
-        docker push $ECR_REGISTRY/$ECR_REPO/mongodb-custom:latest
+        docker build -t $ECR_URI:mongodb ./mongodb
+        docker push $ECR_URI:mongodb
