@@ -1,5 +1,12 @@
 FROM nginx
-RUN rm -rf /usr/share/nginx/html/index.html
-RUN rm -rf /etc/nginx/conf.d/default.conf
-COPY roboshop.conf /etc/nginx/conf.d/roboshop.conf
-ADD static /usr/share/nginx/html/
+
+# Remove default files
+RUN rm -f /usr/share/nginx/html/index.html
+RUN rm -f /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/nginx.conf
+
+# Copy custom NGINX config
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy static content
+ADD static/ /usr/share/nginx/html/
