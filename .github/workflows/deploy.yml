@@ -68,6 +68,6 @@ jobs:
 
     - name: 🚀 Deploy NGINX Web to OpenShift
       run: |
-        oc apply -f manifests/nginx-web.yaml
+        oc apply -f manifests/nginx-web-deployment.yaml
         oc rollout restart deployment/nginx-web -n srinivas-gonepudi-dev
         oc rollout status deployment/nginx-web -n srinivas-gonepudi-dev        
