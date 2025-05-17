@@ -68,4 +68,4 @@ jobs:
 
     - name: 🚀 Deploy web to OpenShift
       run: |
-        oc apply -f manifests/nginx-deployment.yaml        
+        oc apply -f manifests/nginx-web-deployment.yaml        
