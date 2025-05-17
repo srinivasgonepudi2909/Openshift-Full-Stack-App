@@ -34,9 +34,10 @@ spec:
   selector:
     app: nginx-web
   ports:
-    - port: 80
-      targetPort: 8080
+    - name: http
       protocol: TCP
+      port: 8080
+      targetPort: 8080
 
 ---
 apiVersion: route.openshift.io/v1
@@ -49,4 +50,5 @@ spec:
     kind: Service
     name: nginx-web
   port:
-    targetPort: 80
+    targetPort: 8080
+
