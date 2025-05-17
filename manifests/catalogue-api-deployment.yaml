@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: catalogue
-  namespace: roboshop
+  namespace: srinivas-gonepudi-dev
 data:
   MONGO: "true"
 ---
@@ -10,44 +10,50 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue
-  namespace: roboshop
-  labels: # these labels are deployment labels
+  namespace: srinivas-gonepudi-dev
+  labels:
     app: catalogue
-    project: roboshop
-    tier: app
 spec:
   replicas: 1
   selector:
-    matchLabels: # these labels are used to find the pods
+    matchLabels:
       app: catalogue
-      project: roboshop
-      tier: app
   template:
     metadata:
-      labels: # these labels are pod labels
+      labels:
         app: catalogue
-        project: roboshop
-        tier: app
     spec:
       containers:
       - name: catalogue
-        image: joindevops/catalogue:v1
+        image: 025066240744.dkr.ecr.us-east-1.amazonaws.com/openshift-images-repo:catalogue
         imagePullPolicy: Always
         envFrom:
-        - configMapRef:
-            name: catalogue
+          - configMapRef:
+              name: catalogue
+      imagePullSecrets:
+        - name: aws-ecr-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: catalogue
-  namespace: roboshop
+  namespace: srinivas-gonepudi-dev
 spec:
   selector:
     app: catalogue
-    project: roboshop
-    tier: app
   ports:
-  - protocol: TCP
-    port: 8080 #service-port
-    targetPort: 8080 #container-port
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: catalogue
+  namespace: srinivas-gonepudi-dev
+spec:
+  to:
+    kind: Service
+    name: catalogue
+  port:
+    targetPort: 8080

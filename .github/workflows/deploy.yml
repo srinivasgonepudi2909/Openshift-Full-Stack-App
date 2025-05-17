@@ -62,6 +62,6 @@ jobs:
       run: |
         oc apply -f manifests/mongodb-deployment.yaml
 
-    - name: 🚀 Deploy MongoDB to OpenShift
+    - name: 🚀 Deploy catalogue to OpenShift
       run: |
         oc apply -f manifests/catalogue-api-deployment.yaml    
