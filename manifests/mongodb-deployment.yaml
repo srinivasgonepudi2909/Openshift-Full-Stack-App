@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -10,14 +11,12 @@ metadata:
 spec:
   replicas: 1
   selector:
-    matchLabels:
+    matchLabels:            # 👈 only keep original label here to avoid immutability error
       app: mongodb
-      project: roboshop
-      tier: db
   template:
     metadata:
       labels:
-        app: mongodb
+        app: mongodb        # 👈 required for pod matching
         project: roboshop
         tier: db
     spec:
