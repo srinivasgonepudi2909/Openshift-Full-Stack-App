@@ -1,4 +1,4 @@
-# ConfigMap for NGINX Config
+# ConfigMap
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -49,7 +49,6 @@ data:
     }
 
 ---
-
 # Deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -58,21 +57,15 @@ metadata:
   namespace: srinivas-gonepudi-dev
   labels:
     app: nginx-web
-    project: roboshop
-    tier: web
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: nginx-web
-      project: roboshop
-      tier: web
   template:
     metadata:
       labels:
         app: nginx-web
-        project: roboshop
-        tier: web
     spec:
       containers:
         - name: nginx-web
@@ -81,26 +74,21 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: nginx-conf
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-              readOnly: true
-            - name: nginx-cache
-              mountPath: /var/cache/nginx
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: web
+          items:
+            - key: nginx.conf
+              path: nginx.conf
       imagePullSecrets:
         - name: aws-ecr-secret
-      volumes:
-        - name: nginx-conf
-          configMap:
-            name: nginx-web
-            items:
-              - key: nginx.conf
-                path: nginx.conf
-        - name: nginx-cache
-          emptyDir: {}
 
 ---
-
 # Service
 apiVersion: v1
 kind: Service
@@ -110,16 +98,13 @@ metadata:
 spec:
   selector:
     app: nginx-web
-    project: roboshop
-    tier: web
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
 
 ---
-
-# OpenShift Route
+# Route
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
