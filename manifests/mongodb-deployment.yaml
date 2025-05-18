@@ -9,7 +9,7 @@ metadata:
     project: roboshop
     tier: db
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:            # 👈 only keep original label here to avoid immutability error
       app: mongodb
