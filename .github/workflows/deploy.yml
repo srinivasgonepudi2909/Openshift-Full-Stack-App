@@ -81,5 +81,5 @@ jobs:
     - name: Debug Show All Resources
       run: |
         oc get pods -n srinivas-gonepudi-dev
-        oc get deployment -n srinivas-gonepudi-dev    
+        oc get deployment -n srinivas-gonepudi-dev  
             
