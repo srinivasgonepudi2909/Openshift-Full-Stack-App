@@ -66,16 +66,17 @@ jobs:
       run: |
         oc apply -f manifests/catalogue-api-deployment.yaml
 
-    - name:  Deploy to OpenShift
+    - name: 🚀 Deploy to OpenShift (Safe Image Refresh)
       run: |
+        echo "Applying the latest manifest..."
         oc apply -f manifests/nginx-web-deployment.yaml
 
-        for pod in $(oc get pods -n srinivas-gonepudi-dev -l app=nginx-web -o name); do
-          oc delete $pod -n srinivas-gonepudi-dev --grace-period=0 --force || true
-        done
-
+        echo "Triggering a deployment restart to force image pull..."
         oc rollout restart deployment/nginx-web -n srinivas-gonepudi-dev
+
+        echo "Waiting for rollout to complete..."
         oc rollout status deployment/nginx-web -n srinivas-gonepudi-dev --timeout=90s
+
 
     - name: Debug Show All Resources
       run: |
