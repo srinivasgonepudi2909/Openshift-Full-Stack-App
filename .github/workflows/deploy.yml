@@ -66,7 +66,7 @@ jobs:
       run: |
         oc apply -f manifests/catalogue-api-deployment.yaml
 
-    - name: 🚀 Deploy to OpenShift (Safe Image Refresh)
+    - name:  Deploy to OpenShift (Safe Image Refresh)
       run: |
         echo "Applying the latest manifest..."
         oc apply -f manifests/nginx-web-deployment.yaml
