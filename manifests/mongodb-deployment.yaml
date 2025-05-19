@@ -11,12 +11,12 @@ metadata:
 spec:
   replicas: 0
   selector:
-    matchLabels:            # 👈 only keep original label here to avoid immutability error
+    matchLabels:           
       app: mongodb
   template:
     metadata:
       labels:
-        app: mongodb        # 👈 required for pod matching
+        app: mongodb      
         project: roboshop
         tier: db
     spec:

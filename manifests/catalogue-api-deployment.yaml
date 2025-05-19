@@ -45,15 +45,3 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: catalogue
-  namespace: srinivas-gonepudi-dev
-spec:
-  to:
-    kind: Service
-    name: catalogue
-  port:
-    targetPort: 8080
