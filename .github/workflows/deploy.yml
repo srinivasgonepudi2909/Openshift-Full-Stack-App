@@ -42,31 +42,31 @@ jobs:
         docker build -t $ECR_URI:mongodb ./mongodb
         docker push $ECR_URI:mongodb
 
-    - name: 📦 Install OpenShift CLI
+    - name: Install OpenShift CLI
       run: |
         curl -LO https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
         tar -xzf oc.tar.gz
         sudo mv oc /usr/local/bin/
 
-    - name: 🔐 Login to OpenShift Sandbox
+    - name: Login to OpenShift Sandbox
       run: |
         oc login ${{ secrets.OCP_API_URL }} \
           --token=${{ secrets.OCP_TOKEN }} \
           --insecure-skip-tls-verify=true    
     
-    - name: 📁 Set Project Namespace
+    - name: Set Project Namespace
       run: |
         oc project srinivas-gonepudi-dev
 
-    - name: 🚀 Deploy MongoDB to OpenShift
+    - name:  Deploy MongoDB to OpenShift
       run: |
         oc apply -f manifests/mongodb-deployment.yaml
 
-    - name: 🚀 Deploy catalogue to OpenShift
+    - name: Deploy catalogue to OpenShift
       run: |
         oc apply -f manifests/catalogue-api-deployment.yaml
 
-    - name: 🚀 Deploy to OpenShift
+    - name:  Deploy to OpenShift
       run: |
         oc apply -f manifests/nginx-web-deployment.yaml
 
@@ -76,4 +76,9 @@ jobs:
 
         oc rollout restart deployment/nginx-web -n srinivas-gonepudi-dev
         oc rollout status deployment/nginx-web -n srinivas-gonepudi-dev --timeout=90s
+
+    - name: Debug Show All Resources
+      run: |
+        oc get pods -n srinivas-gonepudi-dev
+        oc get deployment -n srinivas-gonepudi-dev    
             
